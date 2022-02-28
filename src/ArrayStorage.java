@@ -9,6 +9,7 @@ public class ArrayStorage {
 
     public void clear() {
         Arrays.fill(storage, 0, size, null);
+        size = 0;
     }
 
     public void save(Resume r) {
@@ -17,22 +18,20 @@ public class ArrayStorage {
     }
 
     public Resume get(String uuid) {
-        for (Resume r : storage) {
-            if (r.getUuid().equals(uuid)) {
-                return r;
+        for (int i = 0; i < size; i++) {
+            if (storage[i].toString().equals(uuid)) {
+                return storage[i];
             }
         }
         return null;
     }
 
     public void delete(String uuid) {
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
-                storage[i] = null;
-                for (int j = i; j < storage.length - 1; j++) {
-                    storage[j] = storage[j + 1];
-                    storage[j + 1] = null;
-                }
+        for (int i = 0; i < size; i++) {
+            if (storage[i].toString().equals(uuid)) {
+                storage[i] = storage[size - 1];
+                storage[size - 1] = null;
+                size--;
             }
         }
     }
@@ -48,5 +47,3 @@ public class ArrayStorage {
         return size;
     }
 }
-
-
