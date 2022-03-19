@@ -23,7 +23,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
             System.out.println("Резюме " + r.getUuid() + " уже существует");
         } else if (size >= STORAGE_LIMIT) {
             System.out.println("Хранилище переполнено");
-        } else if ((index * (-1)) - 1 == 0) {
+        } else if (index < 0) {
             storage[size] = r;
             size++;
         } else {
