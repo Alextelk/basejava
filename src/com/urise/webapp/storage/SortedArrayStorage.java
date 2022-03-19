@@ -4,36 +4,41 @@ import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
 
-import java.util.Arrays;
+public class SortedArrayStorage extends AbstractArrayStorage {
 
-/**
- * Array based storage for Resumes
- */
-public class ArrayStorage extends AbstractArrayStorage {
-
+    @Override
     public void update(Resume r) {
         int index = getIndex(r.getUuid());
-        if (index == -1) {
+        if (index < 0) {
             System.out.println("Резюме " + r.getUuid() + " не найдено");
         } else {
             storage[index] = r;
         }
     }
 
+    @Override
     public void save(Resume r) {
-        if (getIndex(r.getUuid()) != -1) {
+        int index = getIndex(r.getUuid());
+        if (index >= 0) {
             System.out.println("Резюме " + r.getUuid() + " уже существует");
         } else if (size >= STORAGE_LIMIT) {
             System.out.println("Хранилище переполнено");
-        } else {
+        } else if ((index * (-1)) - 1 == 0) {
             storage[size] = r;
+            size++;
+        } else {
+            for (int i = size + 1; i >= (index * (-1)) - 1; i--) {
+                storage[i] = storage[i + 1];
+            }
+            storage[(index * (-1)) - 1] = r;
             size++;
         }
     }
 
+    @Override
     public void delete(String uuid) {
         int index = getIndex(uuid);
-        if (index == -1) {
+        if (index < 0) {
             System.out.println("Резюме " + uuid + " не найдено");
         } else {
             storage[index] = storage[size - 1];
@@ -42,16 +47,15 @@ public class ArrayStorage extends AbstractArrayStorage {
         }
     }
 
+    @Override
     public Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, size);
+        return new Resume[0];
     }
 
+    @Override
     protected int getIndex(String uuid) {
-        for (int i = 0; i < size; i++) {
-            if (uuid.equals(storage[i].getUuid())) {
-                return i;
-            }
-        }
-        return -1;
+        Resume searchKey = new Resume();
+        searchKey.setUuid(uuid);
+        return Arrays.binarySearch(storage, 0, size, searchKey);
     }
 }
