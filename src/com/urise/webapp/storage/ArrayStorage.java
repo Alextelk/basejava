@@ -11,17 +11,8 @@ import java.util.Arrays;
  */
 public class ArrayStorage extends AbstractArrayStorage {
 
-    public void update(Resume r) {
-        int index = getIndex(r.getUuid());
-        if (index == -1) {
-            System.out.println("Резюме " + r.getUuid() + " не найдено");
-        } else {
-            storage[index] = r;
-        }
-    }
-
     public void save(Resume r) {
-        if (getIndex(r.getUuid()) != -1) {
+        if (getIndex(r.getUuid()) >= 0) {
             System.out.println("Резюме " + r.getUuid() + " уже существует");
         } else if (size >= STORAGE_LIMIT) {
             System.out.println("Хранилище переполнено");
@@ -40,10 +31,6 @@ public class ArrayStorage extends AbstractArrayStorage {
             storage[size - 1] = null;
             size--;
         }
-    }
-
-    public Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, size);
     }
 
     protected int getIndex(String uuid) {

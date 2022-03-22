@@ -22,6 +22,19 @@ public abstract class AbstractArrayStorage implements Storage {
         size = 0;
     }
 
+    public void update(Resume r) {
+        int index = getIndex(r.getUuid());
+        if (index < 0) {
+            System.out.println("Резюме " + r.getUuid() + " не найдено");
+        } else {
+            storage[index] = r;
+        }
+    }
+
+    public Resume[] getAll() {
+        return Arrays.copyOfRange(storage, 0, size);
+    }
+
     public Resume get(String uuid) {
         int index = getIndex(uuid);
         if (index == -1) {
