@@ -8,11 +8,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     public void save(Resume r) {
-        if (getIndex(r.getUuid()) >= 0) {
-            System.out.println("Резюме " + r.getUuid() + " уже существует");
-        } else if (size >= STORAGE_LIMIT) {
-            System.out.println("Хранилище переполнено");
-        } else {
+        if (checkUuidForSave(r)){
             int index = Math.abs(getIndex(r.getUuid())) - 1;
             if (index == size) {
                 storage[size] = r;
@@ -29,12 +25,9 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            System.out.println("Резюме " + uuid + " не найдено");
-        } else {
+     if(checkUuidForDelete(uuid)) {
             size--;
-            for (int i = index; i <= size; i++)
+            for (int i = getIndex(uuid); i <= size; i++)
                 storage[i] = storage[i + 1];
         }
     }

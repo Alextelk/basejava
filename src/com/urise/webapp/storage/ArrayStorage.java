@@ -11,28 +11,24 @@ import java.util.Arrays;
  */
 public class ArrayStorage extends AbstractArrayStorage {
 
+    @Override
     public void save(Resume r) {
-        if (getIndex(r.getUuid()) >= 0) {
-            System.out.println("Резюме " + r.getUuid() + " уже существует");
-        } else if (size >= STORAGE_LIMIT) {
-            System.out.println("Хранилище переполнено");
-        } else {
+        if (checkUuidForSave(r)) {
             storage[size] = r;
             size++;
         }
     }
 
+    @Override
     public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index == -1) {
-            System.out.println("Резюме " + uuid + " не найдено");
-        } else {
-            storage[index] = storage[size - 1];
+        if(checkUuidForDelete(uuid)){
+            storage[getIndex(uuid)] = storage[size - 1];
             storage[size - 1] = null;
             size--;
         }
     }
 
+    @Override
     protected int getIndex(String uuid) {
         for (int i = 0; i < size; i++) {
             if (uuid.equals(storage[i].getUuid())) {
