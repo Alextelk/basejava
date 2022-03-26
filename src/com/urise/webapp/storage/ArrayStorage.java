@@ -12,20 +12,16 @@ import java.util.Arrays;
 public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
-    public void save(Resume r) {
-        if (checkUuidForSave(r)) {
+    public void saveResume(Resume r) {
             storage[size] = r;
             size++;
-        }
     }
 
     @Override
-    public void delete(String uuid) {
-        if(checkUuidForDelete(uuid)){
+    public void deleteResume(String uuid) {
             storage[getIndex(uuid)] = storage[size - 1];
             storage[size - 1] = null;
             size--;
-        }
     }
 
     @Override

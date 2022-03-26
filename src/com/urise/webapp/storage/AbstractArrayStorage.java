@@ -44,28 +44,27 @@ public abstract class AbstractArrayStorage implements Storage {
         return storage[index];
     }
 
-    public boolean checkUuidForSave(Resume r){
+    public void save(Resume r){
         if (getIndex(r.getUuid()) >= 0) {
             System.out.println("Резюме " + r.getUuid() + " уже существует");
-            return false;
         } else if (size >= STORAGE_LIMIT) {
             System.out.println("Хранилище переполнено");
-            return false;
+        } else {
+            saveResume(r);
         }
-        return true;
     }
 
-    public boolean checkUuidForDelete(String uuid) {
+    public void delete(String uuid) {
         if (getIndex(uuid) < 0) {
             System.out.println("Резюме " + uuid + " не найдено");
-            return false;
+        } else {
+            deleteResume(uuid);
         }
-        return true;
     }
 
-    public abstract void save(Resume r);
+    public abstract void saveResume(Resume r);
 
-    public abstract void delete(String uuid);
+    public abstract void deleteResume(String uuid);
 
     protected abstract int getIndex(String uuid);
 }
