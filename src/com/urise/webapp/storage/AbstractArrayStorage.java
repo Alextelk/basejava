@@ -55,7 +55,6 @@ public abstract class AbstractArrayStorage implements Storage {
         }
         saveResume(r);
         size++;
-
     }
 
     public void delete(String uuid) {
