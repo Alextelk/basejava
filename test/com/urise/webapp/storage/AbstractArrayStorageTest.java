@@ -74,10 +74,13 @@ public abstract class AbstractArrayStorageTest {
     public void clear() throws Exception {
         storage.clear();
         Assert.assertEquals(0, storage.size());
+        Assert.assertEquals(0, storage.getAll().length);
     }
 
     @Test
     public void update() throws Exception {
+        storage.update(RESUME_1);
+        Assert.assertEquals(RESUME_1, storage.get(UUID_1));
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -102,9 +105,9 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void save() throws Exception {
-        storage.clear();
-        storage.save(RESUME_1);
-        Assert.assertEquals(RESUME_1, storage.get(UUID_1));
+        storage.save(RESUME_6);
+        Assert.assertEquals(RESUME_6, storage.get(UUID_6));
+        Assert.assertEquals(6, storage.size());
     }
 
     @Test(expected = ExistStorageException.class)
@@ -114,11 +117,9 @@ public abstract class AbstractArrayStorageTest {
 
     @Test(expected = StorageException.class)
     public void saveOverflow() throws Exception {
-        storage.save(RESUME_6);
-        storage.save(RESUME_7);
-        storage.save(RESUME_8);
-        storage.save(RESUME_9);
-        storage.save(RESUME_10);
+        for (int i = 6; i <= STORAGE_LIMIT; i++) {
+            storage.save(new Resume("uuid"));
+        }
         if (storage.size() > STORAGE_LIMIT) {
             Assert.fail("Переполнение произошло раньше времени");
         }
@@ -129,6 +130,7 @@ public abstract class AbstractArrayStorageTest {
     public void delete() throws Exception {
         storage.delete(UUID_5);
         storage.get(UUID_5);
+        Assert.assertEquals(4, storage.size());
     }
 
     @Test(expected = NotExistStorageException.class)
