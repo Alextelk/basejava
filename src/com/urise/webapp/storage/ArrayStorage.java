@@ -12,12 +12,12 @@ import java.util.Arrays;
 public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
-    public void saveResume(Resume r) {
+    public void saveElement(Resume r) {
         storage[size] = r;
     }
 
     @Override
-    public void deleteResume(int index) {
+    public void deleteElement(int index) {
         storage[index] = storage[size - 1];
     }
 
