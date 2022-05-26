@@ -19,23 +19,23 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Resume r, int key) {
+    protected void doSave(Resume r, int index) {
         listStorage.add(r);
     }
 
     @Override
-    protected void doDelete(String uuid, int key) {
-        listStorage.remove(key);
+    protected void doDelete(String uuid, int index) {
+        listStorage.remove(index);
     }
 
     @Override
-    protected void doUpdate(Resume r, int key) {
-        listStorage.set(key, r);
+    protected void doUpdate(Resume r, int index) {
+        listStorage.set(index, r);
     }
 
     @Override
-    protected Resume doGet(int key) {
-        return listStorage.get(key);
+    protected Resume doGet(int index) {
+        return listStorage.get(index);
     }
 
     @Override

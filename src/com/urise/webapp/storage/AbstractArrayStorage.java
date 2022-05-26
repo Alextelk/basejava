@@ -25,42 +25,33 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         size = 0;
     }
 
-    protected void doUpdate(Resume r, int key) {
-        int index = getIndex(r.getUuid());
-        if (index < 0) {
-            throw new NotExistStorageException(r.getUuid());
-        }
+    protected void doUpdate(Resume r, int index) {
         storage[index] = r;
-
     }
 
     public Resume[] getAll() {
         return Arrays.copyOfRange(storage, 0, size);
     }
 
-    protected Resume doGet(int key) {
-        return storage[key];
+    protected Resume doGet(int index) {
+        return storage[index];
     }
 
-    protected void doSave(Resume r, int key) {
+    protected void doSave(Resume r, int index) {
         if (size >= STORAGE_LIMIT) {
             throw new StorageException("Хранилище переполнено", r.getUuid());
         }
-        saveElement(r);
+        saveResume(r);
         size++;
     }
 
-    protected void doDelete(String uuid, int key) {
-        int index = getIndex(uuid);
-        deleteElement(index);
+    protected void doDelete(String uuid, int index) {
+        deleteResume(index);
         storage[size - 1] = null;
         size--;
-
     }
 
-    public abstract void saveElement(Resume r);
+    public abstract void saveResume(Resume r);
 
-    public abstract void deleteElement(int index);
-
-    protected abstract int getIndex(String uuid);
+    public abstract void deleteResume(int index);
 }
