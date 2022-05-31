@@ -78,7 +78,6 @@ public abstract class AbstractStorageTest {
     @Test
     public void getAll() throws Exception {
         assertArrayEquals(STORAGE_ARRAY_TEST, storage.getAll());
-        assertEquals(5, STORAGE_ARRAY_TEST.length);
     }
 
     @Test

@@ -3,13 +3,14 @@ package com.urise.webapp.storage;
 import com.urise.webapp.model.Resume;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ListStorage extends AbstractStorage {
     private List<Resume> listStorage = new ArrayList<>();
 
     @Override
-    protected int getIndex(String uuid) {
+    protected Integer findSearchKey(String uuid) {
         for (int i = 0; i < listStorage.size(); i++) {
             if (listStorage.get(i).getUuid().equals(uuid)) {
                 return i;
@@ -19,23 +20,28 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Resume r, int index) {
+    protected boolean isExist(Object index) {
+        return (Integer) index >= 0;
+    }
+
+    @Override
+    protected void doSave(Resume r, Object index) {
         listStorage.add(r);
     }
 
     @Override
-    protected void doDelete(String uuid, int index) {
-        listStorage.remove(index);
+    protected void doDelete(String uuid, Object index) {
+        listStorage.remove((int) index);
     }
 
     @Override
-    protected void doUpdate(Resume r, int index) {
-        listStorage.set(index, r);
+    protected void doUpdate(Resume r, Object index) {
+        listStorage.set((Integer) index, r);
     }
 
     @Override
-    protected Resume doGet(int index) {
-        return listStorage.get(index);
+    protected Resume doGet(Object index) {
+        return listStorage.get((Integer) index);
     }
 
     @Override
