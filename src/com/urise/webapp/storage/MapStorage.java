@@ -8,12 +8,11 @@ import java.util.Map;
 
 public class MapStorage extends AbstractStorage {
 
-    Map<String, Resume> mapStorage = new HashMap<>();
+    private Map<String, Resume> mapStorage = new HashMap<>();
 
     @Override
     protected String findSearchKey(String uuid) {
-        boolean exist = mapStorage.containsKey(uuid);
-        return (exist) ? uuid : null;
+        return mapStorage.containsKey(uuid) ? uuid : null;
     }
 
     @Override
