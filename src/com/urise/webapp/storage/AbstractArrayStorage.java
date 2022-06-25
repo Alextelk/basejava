@@ -5,6 +5,7 @@ import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Array based storage for Resumes
@@ -28,8 +29,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         storage[(Integer) index] = r;
     }
 
-    public Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, size);
+    public List<Resume> copyStorage() {
+        return Arrays.asList(Arrays.copyOfRange(storage, 0, size));
     }
 
     protected Resume doGet(Object index) {

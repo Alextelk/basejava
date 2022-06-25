@@ -7,11 +7,14 @@ import com.urise.webapp.model.Resume;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static com.urise.webapp.storage.AbstractArrayStorage.STORAGE_LIMIT;
 import static org.junit.Assert.*;
 
 public abstract class AbstractStorageTest {
-    private final Storage storage;
+    protected final Storage storage;
 
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
@@ -28,12 +31,12 @@ public abstract class AbstractStorageTest {
     private static final Resume RESUME_6;
 
     static {
-        RESUME_1 = new Resume(UUID_1);
-        RESUME_2 = new Resume(UUID_2);
-        RESUME_3 = new Resume(UUID_3);
-        RESUME_4 = new Resume(UUID_4);
-        RESUME_5 = new Resume(UUID_5);
-        RESUME_6 = new Resume(UUID_6);
+        RESUME_1 = new Resume(UUID_1, "Name1");
+        RESUME_2 = new Resume(UUID_2, "Name2");
+        RESUME_3 = new Resume(UUID_3, "Name3");
+        RESUME_4 = new Resume(UUID_4, "Name4");
+        RESUME_5 = new Resume(UUID_5, "Name5");
+        RESUME_6 = new Resume(UUID_6, "Name6");
     }
 
     private static final Resume[] STORAGE_ARRAY_TEST = {RESUME_1, RESUME_2, RESUME_3, RESUME_4, RESUME_5};
@@ -65,7 +68,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() throws Exception {
-        Resume newResume = new Resume(UUID_1);
+        Resume newResume = new Resume(UUID_1, "Name");
         storage.update(newResume);
         assertEquals(newResume, storage.get(UUID_1));
     }
@@ -76,8 +79,10 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    public void getAll() throws Exception {
-        assertArrayEquals(STORAGE_ARRAY_TEST, storage.getAll());
+    public void getAllSorted() throws Exception {
+        List<Resume> list = storage.getAllSorted();
+        assertEquals(5, list.size());
+        assertEquals(list, Arrays.asList(RESUME_1, RESUME_2, RESUME_3, RESUME_4, RESUME_5));
     }
 
     @Test
@@ -104,18 +109,6 @@ public abstract class AbstractStorageTest {
     @Test(expected = ExistStorageException.class)
     public void saveExist() throws Exception {
         storage.save(RESUME_1);
-    }
-
-    @Test(expected = StorageException.class)
-    public void saveOverflow() {
-        try {
-            for (int i = storage.size(); i < STORAGE_LIMIT; i++) {
-                storage.save(new Resume("uuid" + (i + 1)));
-            }
-        } catch (StorageException e) {
-            fail("Переполнение произошло раньше времени");
-        }
-        storage.save(RESUME_6);
     }
 
     @Test(expected = NotExistStorageException.class)
