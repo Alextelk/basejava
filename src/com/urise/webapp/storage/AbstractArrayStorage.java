@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Array based storage for Resumes
  */
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_LIMIT = 10;
 
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
@@ -25,19 +25,19 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         size = 0;
     }
 
-    protected void doUpdate(Resume r, Object index) {
-        storage[(Integer) index] = r;
+    protected void doUpdate(Resume r, Integer index) {
+        storage[index] = r;
     }
 
     public List<Resume> copyStorage() {
         return Arrays.asList(Arrays.copyOfRange(storage, 0, size));
     }
 
-    protected Resume doGet(Object index) {
-        return storage[(Integer) index];
+    protected Resume doGet(Integer index) {
+        return storage[index];
     }
 
-    protected void doSave(Resume r, Object index) {
+    protected void doSave(Resume r, Integer index) {
         if (size >= STORAGE_LIMIT) {
             throw new StorageException("Хранилище переполнено", r.getUuid());
         }
@@ -45,15 +45,15 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         size++;
     }
 
-    protected void doDelete(String uuid, Object index) {
-        deleteResume((Integer) index);
+    protected void doDelete(String uuid, Integer index) {
+        deleteResume(index);
         storage[size - 1] = null;
         size--;
     }
 
     @Override
-    protected boolean isExist(Object key) {
-        return (Integer) key >= 0;
+    protected boolean isExist(Integer key) {
+        return key >= 0;
     }
 
     public abstract void saveResume(Resume r);
