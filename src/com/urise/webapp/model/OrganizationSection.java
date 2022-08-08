@@ -9,7 +9,7 @@ public class OrganizationSection extends AbstractSection {
     private final List<Organization> organizationsList = new ArrayList<>();
 
     public OrganizationSection() {
-
+        Objects.requireNonNull(organizationsList, "organizations must not be null");
     }
 
     public List<Organization> getOrganizations() {

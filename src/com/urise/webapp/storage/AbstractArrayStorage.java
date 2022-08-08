@@ -45,7 +45,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
         size++;
     }
 
-    protected void doDelete(String uuid, Integer index) {
+    protected void doDelete(Integer index) {
         deleteResume(index);
         storage[size - 1] = null;
         size--;
