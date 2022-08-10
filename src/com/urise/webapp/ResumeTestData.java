@@ -1,4 +1,6 @@
-package com.urise.webapp.model;
+package com.urise.webapp;
+
+import com.urise.webapp.model.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -6,8 +8,20 @@ import java.util.List;
 import java.util.Map;
 
 public class ResumeTestData {
+    public static void main(String[] args) {
+        Resume resume = fillResume("uuid1", "Григорий Кислин");
+        System.out.println(resume.getFullName());
+        for (Map.Entry<ContactType, String> pair : resume.getContacts().entrySet()) {
+            System.out.println(pair.getKey() + ": " + pair.getValue());
+        }
 
-    public Resume fullResume(String uuid, String fullName) {
+        for (Map.Entry<SectionType, AbstractSection> pair : resume.getSections().entrySet()) {
+            System.out.println(pair.getKey() + ": " + pair.getValue());
+        }
+
+    }
+
+    public static Resume fillResume(String uuid, String fullName) {
         Resume resume1 = new Resume(uuid, fullName);
         resume1.setContacts(ContactType.PHONE_NUMBER, "+7(921) 855-0482");
         resume1.setContacts(ContactType.SKYPE, "skype:grigory.kislin");
