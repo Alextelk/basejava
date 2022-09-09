@@ -6,6 +6,8 @@ import java.util.Objects;
 
 public class ListSection extends AbstractSection {
 
+    private static final long serialVersionUID = 1L;
+
     private List<String> listResume = new ArrayList<>();
 
     public List<String> getText() {

@@ -37,9 +37,9 @@ public class MainFile {
         if (files != null) {
             for (File f : files) {
                 if (f.isFile()) {
-                    System.out.println(f.getName());
+                    System.out.println("\t" + "\t" + f.getName());
                 } else if (f.isDirectory()) {
-                    System.out.println(f.getName());
+                    System.out.println("\t" + f.getName());
                     getFiles(f);
                 }
             }

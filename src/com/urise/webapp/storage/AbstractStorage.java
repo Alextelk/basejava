@@ -2,8 +2,10 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
+import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,9 +20,9 @@ public abstract class AbstractStorage<SK> implements Storage {
 
     protected abstract boolean isExist(SK key);
 
-    protected abstract void doSave(Resume r, SK key);
+    protected abstract void doSave(Resume r, SK key) throws StorageException;
 
-    protected abstract void doDelete(SK key);
+    protected abstract void doDelete(SK key) throws IOException;
 
     protected abstract void doUpdate(Resume r, SK key);
 
@@ -46,7 +48,7 @@ public abstract class AbstractStorage<SK> implements Storage {
         return doGet(key);
     }
 
-    public void delete(String uuid) {
+    public void delete(String uuid) throws IOException {
         LOG.info("Delete " + uuid);
         SK key = findExistSearchKey(uuid);
         doDelete(key);

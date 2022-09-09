@@ -4,6 +4,8 @@ import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static com.urise.webapp.storage.AbstractArrayStorage.STORAGE_LIMIT;
 import static org.junit.Assert.*;
 
@@ -22,6 +24,8 @@ public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
             }
         } catch (StorageException e) {
             fail("Переполнение произошло раньше времени");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         storage.save(new Resume("name"));
     }

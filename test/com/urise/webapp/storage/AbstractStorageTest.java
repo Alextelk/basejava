@@ -7,12 +7,15 @@ import com.urise.webapp.ResumeTestData;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 public abstract class AbstractStorageTest {
+    protected static final File STORAGE_DIR = new File(".\\basejava\\storage");
     protected final Storage storage;
 
     private static final String UUID_1 = "uuid1";
@@ -120,7 +123,7 @@ public abstract class AbstractStorageTest {
         storage.delete(UUID_6);
     }
 
-    private void assertSize(int size) {
+    private void assertSize(int size) throws IOException {
         assertEquals(size, storage.size());
     }
 
