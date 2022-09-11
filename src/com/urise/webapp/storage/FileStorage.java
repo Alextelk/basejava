@@ -2,19 +2,20 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
+import com.urise.webapp.storage.serializer.StreamSerializer;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ObjectStreamFileStorage extends AbstractStorage<File> {
-    private File directory;
-    private StrategyOfChoice strategyOfChoice;
+public class FileStorage extends AbstractStorage<File> {
+    private final File directory;
+    private final StreamSerializer streamSerializer;
 
-    protected ObjectStreamFileStorage(File directory, StrategyOfChoice strategyOfChoice) {
+    protected FileStorage(File directory, StreamSerializer streamSerializer) {
         Objects.requireNonNull(directory, "directory must not be null");
-        this.strategyOfChoice = strategyOfChoice;
+        this.streamSerializer = streamSerializer;
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not directory");
         }
@@ -26,21 +27,14 @@ public class ObjectStreamFileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                doDelete(file);
-            }
+        for (File file : getListFiles()) {
+            doDelete(file);
         }
     }
 
     @Override
     public int size() {
-        File[] files = directory.listFiles();
-        if (files == null) {
-            throw new StorageException("Size error", null);
-        }
-        return files.length;
+        return getListFiles().length;
     }
 
     @Override
@@ -51,7 +45,7 @@ public class ObjectStreamFileStorage extends AbstractStorage<File> {
     @Override
     protected void doUpdate(Resume r, File file) {
         try {
-            strategyOfChoice.doWrite(r, new BufferedOutputStream(new FileOutputStream(file)));
+            streamSerializer.doWrite(r, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
             throw new StorageException("Update error", file.getName(), e);
         }
@@ -66,16 +60,16 @@ public class ObjectStreamFileStorage extends AbstractStorage<File> {
     protected void doSave(Resume r, File file) {
         try {
             file.createNewFile();
-            doUpdate(r, file);
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("Save error", file.getName(), e);
         }
+        doUpdate(r, file);
     }
 
     @Override
     protected Resume doGet(File file) {
         try {
-            return strategyOfChoice.doRead(new BufferedInputStream(new FileInputStream(file)));
+            return streamSerializer.doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
             throw new StorageException("Get error", file.getName(), e);
         }
@@ -90,14 +84,17 @@ public class ObjectStreamFileStorage extends AbstractStorage<File> {
 
     @Override
     protected List<Resume> copyStorage() {
-        File[] files = directory.listFiles();
-        if (files == null) {
-            throw new StorageException("Directory is exist", null);
-        }
         List<Resume> listFiles = new ArrayList<>();
-        for (File file : files) {
+        for (File file : getListFiles()) {
             listFiles.add(doGet(file));
         }
         return listFiles;
+    }
+
+    private File[] getListFiles() {
+        if (directory.listFiles() == null) {
+            throw new StorageException("Directory read error", null);
+        }
+        return directory.listFiles();
     }
 }
