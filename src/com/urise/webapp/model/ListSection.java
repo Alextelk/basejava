@@ -10,12 +10,19 @@ public class ListSection extends AbstractSection {
 
     private List<String> listResume = new ArrayList<>();
 
+    public ListSection(List<String> read) {
+        super();
+    }
+
     public List<String> getText() {
         return listResume;
     }
 
     public void addToList(String text) {
         listResume.add(text);
+    }
+
+    public ListSection() {
     }
 
     @Override

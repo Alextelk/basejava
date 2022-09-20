@@ -29,18 +29,18 @@ public class MainFile {
         } catch (IOException e) {
             // throw new RuntimeException(e);
         }
-        getFiles(dir);
+        getFiles(dir, "");
     }
 
-    public static void getFiles(File dir) {
+    public static void getFiles(File dir, String offset) {
         File[] files = dir.listFiles();
         if (files != null) {
             for (File f : files) {
                 if (f.isFile()) {
-                    System.out.println("\t" + "\t" + f.getName());
+                    System.out.println(offset + "F: " + f.getName());
                 } else if (f.isDirectory()) {
-                    System.out.println("\t" + f.getName());
-                    getFiles(f);
+                    System.out.println(offset + "D: " + f.getName());
+                    getFiles(f, offset + "  ");
                 }
             }
         }

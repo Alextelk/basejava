@@ -18,7 +18,6 @@ public class ResumeTestData {
         for (Map.Entry<SectionType, AbstractSection> pair : resume.getSections().entrySet()) {
             System.out.println(pair.getKey() + ": " + pair.getValue());
         }
-
     }
 
     public static Resume fillResume(String uuid, String fullName) {
@@ -53,20 +52,20 @@ public class ResumeTestData {
 
         OrganizationSection expirience = new OrganizationSection();
         Link link1 = new Link("Java Online Project", "www.javaops.ru");
-        WorkExpirience work1 = new WorkExpirience(LocalDate.of(2013, 10, 1), LocalDate.now(),
+        Organization.WorkExpirience work1 = new Organization.WorkExpirience(LocalDate.of(2013, 10, 1), LocalDate.now(),
                 "Автор проекта", "Создание, организация и проведение Java онлайн проектов и стажировок.");
-        List<WorkExpirience> workExpirienceList1 = new ArrayList<>();
+        List<Organization.WorkExpirience> workExpirienceList1 = new ArrayList<>();
         workExpirienceList1.add(work1);
         expirience.setOrganizationsList(new Organization(link1, workExpirienceList1));
 
         Link link2 = new Link("Yota", "www.yota.ru");
-        WorkExpirience work2 = new WorkExpirience(LocalDate.of(2008, 6, 1),
+        Organization.WorkExpirience work2 = new Organization.WorkExpirience(LocalDate.of(2008, 6, 1),
                 LocalDate.of(2010, 12, 01),
                 "Ведущий специалист", "Дизайн и имплементация Java EE фреймворка для отдела " +
                 "\"Платежные Системы\" (GlassFish v2.1, v3, OC4J, EJB3, JAX-WS RI 2.1, Servlet 2.4, JSP, JMX, JMS," +
                 " Maven2). Реализация администрирования, статистики и мониторинга фреймворка. Разработка online" +
                 " JMX клиента (Python/ Jython, Django, ExtJS)");
-        List<WorkExpirience> workExpirienceList2 = new ArrayList<>();
+        List<Organization.WorkExpirience> workExpirienceList2 = new ArrayList<>();
         workExpirienceList2.add(work2);
         expirience.setOrganizationsList(new Organization(link2, workExpirienceList2));
 
@@ -75,14 +74,14 @@ public class ResumeTestData {
         OrganizationSection education = new OrganizationSection();
         Link link3 = new Link("Санкт-Петербургский национальный исследовательский университет информационных" +
                 " технологий, механики и оптики", "https://itmo.ru/ru/");
-        WorkExpirience work3 = new WorkExpirience(LocalDate.of(1987, 9, 01),
+        Organization.WorkExpirience work3 = new Organization.WorkExpirience(LocalDate.of(1987, 9, 01),
                 LocalDate.of(1993, 07, 01),
                 "Студент", "Инженер(программист Fortran, C");
 
-        WorkExpirience work4 = new WorkExpirience(LocalDate.of(1993, 9, 01),
+        Organization.WorkExpirience work4 = new Organization.WorkExpirience(LocalDate.of(1993, 9, 01),
                 LocalDate.of(1996, 7, 01), "Аспирант",
                 "Аспирантура (программист С, С++)");
-        List<WorkExpirience> workExpirienceList3 = new ArrayList<>();
+        List<Organization.WorkExpirience> workExpirienceList3 = new ArrayList<>();
         workExpirienceList3.add(work3);
         workExpirienceList3.add(work4);
         education.setOrganizationsList(new Organization(link3, workExpirienceList3));
