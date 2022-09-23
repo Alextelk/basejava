@@ -9,8 +9,6 @@ public class ListSection extends AbstractSection {
     private final static long serialVersionUID = 1L;
     private List<String> listSection = new ArrayList<>();
 
-    public static final ListSection EMPTY = new ListSection("");
-
     public ListSection() {
     }
 
@@ -21,6 +19,13 @@ public class ListSection extends AbstractSection {
     public ListSection(List<String> items) {
         Objects.requireNonNull(items, "items must not be null");
         this.listSection = items;
+    }
+
+    @Override
+    public String toString() {
+        return "ListSection{" +
+                "listSection=" + listSection +
+                '}';
     }
 
     public void addToListSection(String string) {
@@ -42,17 +47,6 @@ public class ListSection extends AbstractSection {
     @Override
     public int hashCode() {
         return Objects.hash(listSection);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-
-        for (String string : listSection) {
-            builder.append(string);
-        }
-
-        return builder.toString();
     }
 
 }

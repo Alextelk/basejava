@@ -16,7 +16,6 @@ import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
-    public static final Organization EMPTY = new Organization("", "", Period.EMPTY);
     private final static long serialVersionUID = 1L;
     protected List<Period> periodList = new ArrayList<>();
     private Link homePage;
@@ -62,23 +61,20 @@ public class Organization implements Serializable {
     }
 
     @Override
+    public String toString() {
+        return "Organization{" +
+                "periodList=" + periodList +
+                ", homePage=" + homePage +
+                '}';
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(periodList, homePage);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder(homePage.getName() + "\n");
-        for (Period a : periodList) {
-            stringBuilder.append(a.getBeginDate() + " - " + a.getFinishDate() + "\n"
-                    + a.getTitle() + "\n" + a.getDescription() + "\n");
-        }
-        return stringBuilder.toString();
-    }
-
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class Period implements Serializable {
-        public static final Period EMPTY = new Period();
         private final static long serialVersionUID = 1L;
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate beginDate;
@@ -114,6 +110,16 @@ public class Organization implements Serializable {
 
         public String getDescription() {
             return description;
+        }
+
+        @Override
+        public String toString() {
+            return "Period{" +
+                    "beginDate=" + beginDate +
+                    ", finishDate=" + finishDate +
+                    ", title='" + title + '\'' +
+                    ", description='" + description + '\'' +
+                    '}';
         }
 
         @Override

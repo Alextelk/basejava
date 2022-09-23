@@ -49,7 +49,7 @@ public class ResumeTestData {
 
         ListSection listSection2 = new ListSection();
         listSection2.addToListSection("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic" +
-                 "WSO2");
+                "WSO2");
         listSection2.addToListSection("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2," +
                 " Oracle,");
         resume.setSections(SectionType.ACHIEVEMENT, listSection1);

@@ -21,6 +21,13 @@ public class OrganizationSection extends AbstractSection {
         this(Arrays.asList(organizations));
     }
 
+    @Override
+    public String toString() {
+        return "OrganizationSection{" +
+                "organizations=" + organizations +
+                '}';
+    }
+
     public List<Organization> getOrganizations() {
         return organizations;
     }
@@ -55,13 +62,4 @@ public class OrganizationSection extends AbstractSection {
         return Objects.hash(organizations);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-
-        for (Organization periodSection : organizations) {
-            builder.append(periodSection + "\n");
-        }
-        return builder.toString();
-    }
 }
