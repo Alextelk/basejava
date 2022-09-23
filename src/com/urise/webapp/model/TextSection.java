@@ -3,24 +3,25 @@ package com.urise.webapp.model;
 import java.util.Objects;
 
 public class TextSection extends AbstractSection {
-    private static final long serialVersionUID = 1L;
-
+    private final static long serialVersionUID = 1L;
     private String text;
+
+    public static final TextSection EMPTY = new TextSection("");
 
     public TextSection() {
     }
 
     public TextSection(String text) {
-        Objects.requireNonNull(text, "content must not be null");
-        this.text = text;
-    }
-
-    public void setText(String text) {
         this.text = text;
     }
 
     public String getText() {
         return text;
+    }
+
+    public void setText(String text) {
+        Objects.requireNonNull(text, "text must not be null");
+        this.text = text;
     }
 
     @Override
@@ -33,7 +34,7 @@ public class TextSection extends AbstractSection {
 
     @Override
     public int hashCode() {
-        return Objects.hash(text);
+        return text.hashCode();
     }
 
     @Override

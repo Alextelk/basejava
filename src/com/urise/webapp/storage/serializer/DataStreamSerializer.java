@@ -14,36 +14,41 @@ public class DataStreamSerializer implements StreamSerializer {
             dos.writeUTF(r.getFullName());
             Map<ContactType, String> contacts = r.getContacts();
             write(dos, contacts.entrySet(), entry -> {
-                        dos.writeUTF(entry.getKey().name());
-                        dos.writeUTF(entry.getValue());
-                    }
-            );
-            Map<SectionType, AbstractSection> sections = r.getSections();
-            write(dos, sections.entrySet(), entry -> {
-                SectionType sectiontype = entry.getKey();
-                dos.writeUTF(sectiontype.name());
-                switch (sectiontype) {
+                dos.writeUTF(entry.getKey().name());
+                dos.writeUTF(entry.getValue());
+            });
+
+            write(dos, r.getSections().entrySet(), entry -> {
+                SectionType type = entry.getKey();
+                AbstractSection section = entry.getValue();
+                dos.writeUTF(type.name());
+                switch (type) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        dos.writeUTF(((TextSection) entry.getValue()).getText());
+                        dos.writeUTF(((TextSection) section).getText());
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        List<String> list = ((ListSection) entry.getValue()).getText();
-                        write(dos, list, dos::writeUTF);
+                        write(dos, ((ListSection) section).getListSection(), dos::writeUTF);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        List<Organization> organizationList = ((OrganizationSection) entry.getValue()).getOrganizations();
-                        write(dos, organizationList, org -> {
-                            dos.writeUTF(org.getOrganization());
-                            dos.writeUTF(org.getHomePage().getUrl());
-                            List<Organization.WorkExpirience> periods = org.getWorkExpirience();
-                            write(dos, periods, per -> {
-                                writeLocalDate(dos, per.getStartDate());
+                        write(dos, ((OrganizationSection) section).getOrganizations(), org -> {
+                            dos.writeUTF(org.getHomePage().getName());
+                            if (org.getHomePage().getUrl() != null) {
+                                dos.writeUTF(org.getHomePage().getUrl());
+                            } else {
+                                dos.writeUTF(" ");
+                            }
+                            write(dos, org.getPeriodList(), per -> {
+                                writeLocalDate(dos, per.getBeginDate());
                                 writeLocalDate(dos, per.getFinishDate());
-                                dos.writeUTF(per.getVacancy());
-                                dos.writeUTF(per.getText());
+                                dos.writeUTF(per.getTitle());
+                                if (per.getDescription() != null) {
+                                    dos.writeUTF(per.getDescription());
+                                } else {
+                                    dos.writeUTF(" ");
+                                }
                             });
                         });
                         break;
@@ -61,38 +66,33 @@ public class DataStreamSerializer implements StreamSerializer {
             readOne(dis, () -> resume.setContacts(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
             readOne(dis, () -> {
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
-                switch (sectionType) {
-                    case PERSONAL:
-                    case OBJECTIVE:
-                        TextSection textSection = new TextSection();
-                        textSection.setText(dis.readUTF());
-                        resume.setSections(sectionType, textSection);
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS:
-                        ListSection listSection = new ListSection(read(dis, dis::readUTF));
-                        resume.setSections(sectionType, listSection);
-                        break;
-                    case EXPERIENCE:
-                    case EDUCATION:
-                        OrganizationSection organizationSection = new OrganizationSection();
-                        readOne(dis, () -> {
-                            String organizationName = dis.readUTF();
-                            String url = dis.readUTF();
-                            readOne(dis, () -> {
-                                Organization organization = new Organization(organizationName, url, readLocalDate(dis)
-                                        , readLocalDate(dis), dis.readUTF(), dis.readUTF());
-                                organizationSection.setOrganizationsList(organization);
-                            });
-                        });
-                        resume.setSections(sectionType, organizationSection);
-                        break;
-                }
+                resume.setSections(sectionType, readSection(dis, sectionType));
             });
             return resume;
         }
     }
 
+    private AbstractSection readSection(DataInputStream dis, SectionType sectionType) throws IOException {
+        switch (sectionType) {
+            case PERSONAL:
+            case OBJECTIVE:
+                return new TextSection(dis.readUTF());
+            case ACHIEVEMENT:
+            case QUALIFICATIONS:
+                return new ListSection(read(dis, dis::readUTF));
+            case EXPERIENCE:
+            case EDUCATION:
+                return new OrganizationSection(
+                        read(dis, () -> new Organization(
+                                new Link(dis.readUTF(), dis.readUTF()),
+                                read(dis, () -> new Organization.Period(
+                                        readLocalDate(dis), readLocalDate(dis), dis.readUTF(), dis.readUTF()
+                                ))
+                        )));
+            default:
+                throw new IllegalStateException();
+        }
+    }
 
     private <T> void write(DataOutputStream dos, Collection<T> collection, Writer<T> writer) throws IOException {
         Objects.requireNonNull(collection);

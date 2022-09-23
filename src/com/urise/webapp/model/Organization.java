@@ -13,30 +13,43 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+    public static final Organization EMPTY = new Organization("", "", Period.EMPTY);
+    private final static long serialVersionUID = 1L;
+    protected List<Period> periodList = new ArrayList<>();
     private Link homePage;
-    private List<WorkExpirience> description = new ArrayList<>();
-
-    public Organization(String organizationName, String url, LocalDate localDate, LocalDate date, String s, String readUTF) {
-    }
-
-    public Organization(String name, String url, WorkExpirience... workExpirience) {
-        this(new Link(name, url), Arrays.asList(workExpirience));
-    }
-
-    public Organization(Link homePage, List<WorkExpirience> description) {
-        this.homePage = homePage;
-        this.description = description;
-    }
 
     public Organization() {
     }
 
+    public Organization(String name, String url, Period... periods) {
+        this(new Link(name, url), Arrays.asList(periods));
+    }
+
+    public Organization(Link homePage, List<Period> periods) {
+        this.homePage = homePage;
+        this.periodList = periods;
+    }
+
+    public Organization(String organization, String url, LocalDate beginDate, LocalDate finishDate, String title, String description) {
+        Objects.requireNonNull(organization, "organization must not be null");
+        homePage = new Link(organization, url);
+        Period period = new Period(beginDate, finishDate, title, description);
+        periodList.add(period);
+    }
+
     public Link getHomePage() {
         return homePage;
+    }
+
+    public String getOrganization() {
+        return homePage.getName();
+    }
+
+    public List<Period> getPeriodList() {
+        return periodList;
     }
 
     @Override
@@ -44,97 +57,79 @@ public class Organization implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Organization that = (Organization) o;
-        return Objects.equals(homePage, that.homePage) && Objects.equals(description, that.description);
+        return periodList.equals(that.periodList) &&
+                homePage.equals(that.homePage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(homePage, description);
+        return Objects.hash(periodList, homePage);
     }
 
     @Override
     public String toString() {
-        return "Organization{" +
-                "homePage=" + homePage +
-                ", description=" + description +
-                '}';
-    }
-
-    public List<WorkExpirience> getWorkExpirience() {
-        return description;
-    }
-
-    public String getOrganization() {
-        return homePage.getName();
-    }
-
-    public void setDescription(List<WorkExpirience> description) {
-        this.description = description;
+        StringBuilder stringBuilder = new StringBuilder(homePage.getName() + "\n");
+        for (Period a : periodList) {
+            stringBuilder.append(a.getBeginDate() + " - " + a.getFinishDate() + "\n"
+                    + a.getTitle() + "\n" + a.getDescription() + "\n");
+        }
+        return stringBuilder.toString();
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    public static class WorkExpirience implements Serializable {
-        private static final long serialVersionUID = 1L;
-
+    public static class Period implements Serializable {
+        public static final Period EMPTY = new Period();
+        private final static long serialVersionUID = 1L;
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
-        private LocalDate startDate;
+        private LocalDate beginDate;
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate finishDate;
-        private String vacancy;
-        private String text;
+        private String title;
+        private String description;
 
-        public WorkExpirience() {
+        public Period() {
         }
 
-        public WorkExpirience(LocalDate startDate, LocalDate finishDate, String vacancy, String text) {
-            this.startDate = startDate;
+        public Period(LocalDate beginDate, LocalDate finishDate, String title, String description) {
+            Objects.requireNonNull(beginDate, "beginDate must not be null");
+            Objects.requireNonNull(finishDate, "finishDate must not be null");
+            Objects.requireNonNull(title, "title must not be null");
+            this.beginDate = beginDate;
             this.finishDate = finishDate;
-            this.vacancy = vacancy;
-            this.text = text;
+            this.title = title;
+            this.description = description == null ? "" : description;
         }
 
-        public LocalDate getStartDate() {
-            return startDate;
+        public LocalDate getBeginDate() {
+            return beginDate;
         }
 
         public LocalDate getFinishDate() {
             return finishDate;
         }
 
-        public String getVacancy() {
-            return vacancy;
+        public String getTitle() {
+            return title;
         }
 
-        public String getText() {
-            return text;
-        }
-
-        @Override
-        public String toString() {
-            return "Expirience{" +
-                    "startDate=" + startDate +
-                    ", finishDate=" + finishDate +
-                    ", vacancy='" + vacancy + '\'' +
-                    ", text='" + text + '\'' +
-                    '}';
+        public String getDescription() {
+            return description;
         }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            WorkExpirience that = (WorkExpirience) o;
-            return Objects.equals(startDate, that.startDate) &&
-                    Objects.equals(finishDate, that.finishDate) &&
-                    Objects.equals(vacancy, that.vacancy) &&
-                    Objects.equals(text, that.text);
+            Period period = (Period) o;
+            return beginDate.equals(period.beginDate) &&
+                    finishDate.equals(period.finishDate) &&
+                    title.equals(period.title) &&
+                    Objects.equals(description, period.description);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(startDate, finishDate, vacancy, text);
+            return Objects.hash(beginDate, finishDate, title, description);
         }
     }
-
-
 }

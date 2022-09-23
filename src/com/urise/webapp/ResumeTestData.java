@@ -1,10 +1,10 @@
 package com.urise.webapp;
 
 import com.urise.webapp.model.*;
+import com.urise.webapp.util.DateUtil;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Month;
 import java.util.Map;
 
 public class ResumeTestData {
@@ -21,73 +21,53 @@ public class ResumeTestData {
     }
 
     public static Resume fillResume(String uuid, String fullName) {
-        Resume resume1 = new Resume(uuid, fullName);
-        resume1.setContacts(ContactType.PHONE_NUMBER, "+7(921) 855-0482");
-        resume1.setContacts(ContactType.SKYPE, "skype:grigory.kislin");
-        resume1.setContacts(ContactType.EMAIL, "gkislin@yandex.ru");
+        Resume resume = new Resume(uuid, fullName);
+        resume.setContacts(ContactType.PHONE_NUMBER, "+7(921) 855-0482");
+        resume.setContacts(ContactType.SKYPE, "grigory.kislin");
+        resume.setContacts(ContactType.EMAIL, "mailto:gkislin@yandex.ru");
+        resume.setContacts(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
+        resume.setContacts(ContactType.GITHUB, "https://github.com/gkislin");
+        resume.setContacts(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
+        resume.setContacts(ContactType.LINK, "http://gkislin.ru/");
 
-        resume1.setSections(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения" +
-                " по Java Web и Enterprise технологиям"));
-        resume1.setSections(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, " +
-                "креативность, инициативность. Пурист кода и архитектуры."));
+        TextSection textSection1 = new TextSection();
+        textSection1.setText("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям");
+
+        TextSection textSection2 = new TextSection();
+        textSection2.setText("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры.");
+        resume.setSections(SectionType.OBJECTIVE, textSection1);
+        resume.setSections(SectionType.PERSONAL, textSection2);
 
         ListSection listSection1 = new ListSection();
-        listSection1.addToList("Организация команды и успешная реализация Java проектов для сторонних" +
-                " заказчиков: приложения автопарк на стеке Spring Cloud/микросервисы, система мониторинга" +
-                " показателей спортсменов на Spring Boot, участие в проекте МЭШ на Play-2, многомодульный" +
-                " Spring Boot + Vaadin проект для комплексных DIY смет");
-        listSection1.addToList("С 2013 года: разработка проектов \"Разработка Web приложения\",\"Java" +
-                " Enterprise\", \"Многомодульный maven. Многопоточность. XML (JAXB/StAX). Веб сервисы " +
-                "(JAX-RS/SOAP). Удаленное взаимодействие (JMS/AKKA)\". Организация онлайн стажировок и " +
-                "ведение проектов. Более 3500 выпускников.");
-        resume1.setSections(SectionType.ACHIEVEMENT, listSection1);
+        listSection1.addToListSection("С 2013 года: разработка проектов \"Разработка Web приложения\",\"Java Enterprise\", \"Многомодульный maven. Многопоточность. XML (JAXB/StAX). Веб сервисы (JAX-RS/SOAP). Удаленное взаимодействие (JMS/AKKA)\". Организация онлайн стажировок и ведение проектов. Более 1000 выпускников.");
+        listSection1.addToListSection("Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike. Интеграция с Twilio, DuoSecurity, Google Authenticator, Jira, Zendesk.");
 
         ListSection listSection2 = new ListSection();
-        listSection2.addToList("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
-        listSection2.addToList("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
-        listSection2.addToList("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2," +
-                " Oracle, MySQL, SQLite, MS SQL, HSQLDB");
-        listSection2.addToList("Languages: Java, Scala, Python/Jython/PL-Python, JavaScript, Groovy");
-        resume1.setSections(SectionType.QUALIFICATIONS, listSection2);
+        listSection2.addToListSection("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
+        listSection2.addToListSection("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle,");
+        resume.setSections(SectionType.ACHIEVEMENT, listSection1);
+        resume.setSections(SectionType.QUALIFICATIONS, listSection2);
 
-        OrganizationSection expirience = new OrganizationSection();
-        Link link1 = new Link("Java Online Project", "www.javaops.ru");
-        Organization.WorkExpirience work1 = new Organization.WorkExpirience(LocalDate.of(2013, 10, 1), LocalDate.now(),
-                "Автор проекта", "Создание, организация и проведение Java онлайн проектов и стажировок.");
-        List<Organization.WorkExpirience> workExpirienceList1 = new ArrayList<>();
-        workExpirienceList1.add(work1);
-        expirience.setOrganizationsList(new Organization(link1, workExpirienceList1));
 
-        Link link2 = new Link("Yota", "www.yota.ru");
-        Organization.WorkExpirience work2 = new Organization.WorkExpirience(LocalDate.of(2008, 6, 1),
-                LocalDate.of(2010, 12, 01),
-                "Ведущий специалист", "Дизайн и имплементация Java EE фреймворка для отдела " +
-                "\"Платежные Системы\" (GlassFish v2.1, v3, OC4J, EJB3, JAX-WS RI 2.1, Servlet 2.4, JSP, JMX, JMS," +
-                " Maven2). Реализация администрирования, статистики и мониторинга фреймворка. Разработка online" +
-                " JMX клиента (Python/ Jython, Django, ExtJS)");
-        List<Organization.WorkExpirience> workExpirienceList2 = new ArrayList<>();
-        workExpirienceList2.add(work2);
-        expirience.setOrganizationsList(new Organization(link2, workExpirienceList2));
+        OrganizationSection organizationSection = new OrganizationSection();
+        Organization organization1 = new Organization("Java Online Projects", "url", DateUtil.of(2013, Month.OCTOBER), LocalDate.now(), "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.");
+        Organization organization2 = new Organization("Java Online Projects", "url", DateUtil.of(2014, Month.OCTOBER), DateUtil.of(2016, Month.JANUARY), "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.");
+        Organization organization3 = new Organization("RIT Center", "url", DateUtil.of(2012, Month.APRIL), DateUtil.of(2012, Month.MARCH), "Java архитектор", "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python");
+        Organization organization4 = new Organization("Java Online Projects", "url", DateUtil.of(2010, Month.OCTOBER), DateUtil.of(2011, Month.JANUARY), "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.");
+        Organization organization5 = new Organization("RIT Center", "url", DateUtil.of(2012, Month.APRIL), DateUtil.of(2012, Month.MARCH), "Java архитектор", "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python");
 
-        resume1.setSections(SectionType.EXPERIENCE, expirience);
+        organizationSection.addOrganization(organization1);
+        organizationSection.addOrganization(organization2);
+        organizationSection.addOrganization(organization3);
+        organizationSection.addOrganization(organization4);
+        organizationSection.addOrganization(organization5);
 
-        OrganizationSection education = new OrganizationSection();
-        Link link3 = new Link("Санкт-Петербургский национальный исследовательский университет информационных" +
-                " технологий, механики и оптики", "https://itmo.ru/ru/");
-        Organization.WorkExpirience work3 = new Organization.WorkExpirience(LocalDate.of(1987, 9, 01),
-                LocalDate.of(1993, 07, 01),
-                "Студент", "Инженер(программист Fortran, C");
+        resume.setSections(SectionType.EXPERIENCE, organizationSection);
 
-        Organization.WorkExpirience work4 = new Organization.WorkExpirience(LocalDate.of(1993, 9, 01),
-                LocalDate.of(1996, 7, 01), "Аспирант",
-                "Аспирантура (программист С, С++)");
-        List<Organization.WorkExpirience> workExpirienceList3 = new ArrayList<>();
-        workExpirienceList3.add(work3);
-        workExpirienceList3.add(work4);
-        education.setOrganizationsList(new Organization(link3, workExpirienceList3));
-
-        resume1.setSections(SectionType.EDUCATION, education);
-
-        return resume1;
+        OrganizationSection study = new OrganizationSection();
+        Organization organization6 = new Organization("Coursera", "url", DateUtil.of(2013, Month.MARCH), DateUtil.of(2013, Month.MAY), "\"Functional Programming Principles in Scala\" by Martin Odersky", null);
+        study.addOrganization(organization6);
+        resume.setSections(SectionType.EDUCATION, study);
+        return resume;
     }
 }
