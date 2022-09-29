@@ -2,29 +2,26 @@ package com.urise.webapp;
 
 public class MainDeadlock {
     public static void main(String[] args) {
-        Object o = new Object();
-        Object o1 = new Object();
-        new Thread(() -> {
-            System.out.println("The thread " + Thread.currentThread().getName() + " is running");
-            deadlock(o, o1);
-        }).start();
-        new Thread(() -> {
-            System.out.println("The thread " + Thread.currentThread().getName() + " is running");
-            deadlock(o1, o);
-        }).start();
+        final Object LOCK_1 = new Object();
+        final Object LOCK_2 = new Object();
+        deadlock(LOCK_1, LOCK_2);
+        deadlock(LOCK_2, LOCK_1);
     }
 
-    public static void deadlock(Object o, Object o1) {
-        System.out.println("Thread " + Thread.currentThread().getName() + " try to capture object o");
-        synchronized (o) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+    public static void deadlock(Object lock1, Object lock2) {
+        new Thread(() -> {
+            System.out.println("The thread " + Thread.currentThread().getName() + " is running");
+            System.out.println("Thread " + Thread.currentThread().getName() + " try to capture lock1");
+            synchronized (lock1) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Thread " + Thread.currentThread().getName() + " try to capture lock2");
+                synchronized (lock2) {
+                }
             }
-            System.out.println("Thread " + Thread.currentThread().getName() + " try to capture object o1");
-            synchronized (o1) {
-            }
-        }
+        }).start();
     }
 }
