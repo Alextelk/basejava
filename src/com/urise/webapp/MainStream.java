@@ -15,12 +15,19 @@ public class MainStream {
     }
 
     public static int minValue(int[] values) {
-        return Arrays.stream(values).distinct().sorted().reduce(0, (a, b) -> 10 * a + b);
+        return Arrays.stream(values)
+                .distinct()
+                .sorted()
+                .reduce(0, (a, b) -> 10 * a + b);
     }
 
     public static List<Integer> oddOrEven(List<Integer> integers) {
-        int result = integers.stream().mapToInt(Integer::intValue).sum() % 2;
+        int result = integers.stream()
+                .mapToInt(Integer::intValue)
+                .sum() % 2;
         System.out.println(result);
-        return integers.stream().filter(x -> x % 2 != result).collect(Collectors.toList());
+        return integers.stream()
+                .filter(x -> x % 2 != result)
+                .collect(Collectors.toList());
     }
 }
