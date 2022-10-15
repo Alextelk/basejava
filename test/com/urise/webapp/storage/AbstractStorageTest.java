@@ -1,9 +1,9 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.Config;
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.Resume;
-import com.urise.webapp.ResumeTestData;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,10 +12,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
-    protected static final File STORAGE_DIR = new File(".\\basejava\\storage");
+    protected static final File STORAGE_DIR = Config.get().getStorageDir();
     protected final Storage storage;
 
     private static final String UUID_1 = "uuid1";
@@ -33,12 +33,18 @@ public abstract class AbstractStorageTest {
     private static final Resume RESUME_6;
 
     static {
-        RESUME_1 = new ResumeTestData().fillResume(UUID_1, "Name1");
-        RESUME_2 = new ResumeTestData().fillResume(UUID_2, "Name2");
-        RESUME_3 = new ResumeTestData().fillResume(UUID_3, "Name3");
-        RESUME_4 = new ResumeTestData().fillResume(UUID_4, "Name4");
-        RESUME_5 = new ResumeTestData().fillResume(UUID_5, "Name5");
-        RESUME_6 = new ResumeTestData().fillResume(UUID_6, "Name6");
+        //       RESUME_1 = new ResumeTestData().fillResume(UUID_1, "Name1");
+        //       RESUME_2 = new ResumeTestData().fillResume(UUID_2, "Name2");
+        //       RESUME_3 = new ResumeTestData().fillResume(UUID_3, "Name3");
+        //       RESUME_4 = new ResumeTestData().fillResume(UUID_4, "Name4");
+        //       RESUME_5 = new ResumeTestData().fillResume(UUID_5, "Name5");
+        //       RESUME_6 = new ResumeTestData().fillResume(UUID_6, "Name6");
+        RESUME_1 = new Resume(UUID_1, "Name1");
+        RESUME_2 = new Resume(UUID_2, "Name2");
+        RESUME_3 = new Resume(UUID_3, "Name3");
+        RESUME_4 = new Resume(UUID_4, "Name4");
+        RESUME_5 = new Resume(UUID_5, "Name5");
+        RESUME_6 = new Resume(UUID_6, "Name6");
     }
 
     protected AbstractStorageTest(Storage storage) {
