@@ -1,10 +1,7 @@
 package com.urise.webapp;
 
 import com.urise.webapp.model.*;
-import com.urise.webapp.util.DateUtil;
 
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.Map;
 
 public class ResumeTestData {
@@ -56,7 +53,7 @@ public class ResumeTestData {
         resume.setSections(SectionType.QUALIFICATIONS, listSection2);
 
 
-        OrganizationSection organizationSection = new OrganizationSection();
+/*        OrganizationSection organizationSection = new OrganizationSection();
         Organization organization1 = new Organization("Java Online Projects", "url",
                 DateUtil.of(2013, Month.OCTOBER), LocalDate.now(), "Автор проекта.",
                 "Создание, организация и проведение Java онлайн проектов и стажировок.");
@@ -102,7 +99,7 @@ public class ResumeTestData {
                 DateUtil.of(2013, Month.MARCH), DateUtil.of(2013, Month.MAY),
                 "\"Functional Programming Principles in Scala\" by Martin Odersky", null);
         study.addOrganization(organization6);
-        resume.setSections(SectionType.EDUCATION, study);
+        resume.setSections(SectionType.EDUCATION, study);      */
         return resume;
     }
 }

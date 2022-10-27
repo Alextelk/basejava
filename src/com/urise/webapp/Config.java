@@ -16,6 +16,7 @@ public class Config {
     private final File storageDir;
     private final Storage storage;
 
+
     public static Config get() {
         return INSTANCE;
     }
