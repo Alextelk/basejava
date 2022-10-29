@@ -2,6 +2,7 @@ package com.urise.webapp.web;
 
 import com.urise.webapp.Config;
 import com.urise.webapp.model.Resume;
+import com.urise.webapp.storage.Storage;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +12,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class ResumeServlet extends HttpServlet {
+    private Storage storage;
+
+    @Override
+    public void init() throws ServletException {
+        storage = Config.get().getStorage();
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -18,30 +25,52 @@ public class ResumeServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 //        response.setHeader("Content-Type", "text/html; charset=UTF-8");
         response.setContentType("text/html; charset=UTF-8");
-        PrintWriter writer = response.getWriter();
+        // Writer writer = response.getWriter();
+        PrintWriter pw = response.getWriter();
 
-        writer.println("<html>" +
-                "<head>" +
-                "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" +
-                "    <link rel=\"stylesheet\" href=\"css/style.css\">" +
-                "</head>" +
-                "<body>" +
-                "<section>" +
-                "<table border=\"1\" cellpadding=\"8\" cellspacing=\"0\">" +
-                "    <tr>" +
-                "        <th>UUID</th>" +
-                "        <th>NAME</th>" +
-                "    </tr>");
+        pw.write("<!DOCTYPE html>");
+        pw.write("<html>");
+        pw.write("<head>");
+        pw.write("<style>");
+        pw.write("table {" +
+                "font-family: arial, sans-serif;" +
+                "border-collapse: collapse;" +
+                "width: 100%;" +
+                "width: 600px;" +
+                "}");
 
-        for (Resume r : Config.get().getStorage().getAllSorted()) {
-            writer.println("<tr>");
-            writer.println("<td>" + r.getUuid() + "</td>");
-            writer.println("<td>" + r.getFullName() + "</td>");
-            writer.println("</tr>");
+        pw.write("td, th {" +
+                "border: 1px solid #dddddd;" +
+                "text-align: left;" +
+                "padding: 8px;" +
+                "}");
+
+        pw.write("tr:nth-child(even) {" +
+                "background-color: #dddddd;" +
+                "}");
+        pw.write("</style>");
+        pw.write("</head>");
+        pw.write("<body>");
+
+        pw.write("<h2>Список резюме</h2>");
+
+        pw.write("<table>");
+        pw.write("<tr>");
+        pw.write("<th>UUID</th>");
+        pw.write("<th>NAME</th>");
+        pw.write("</tr>");
+
+        for (Resume r : storage.getAllSorted()) {
+            pw.write("<tr>");
+            pw.write("<td>" + r.getUuid() + "</td>");
+            pw.write("<td>" + r.getFullName() + "</td>");
+            pw.write("</tr>");
         }
 
-        writer.println("</table>" + "/section" + "</body>" +
-                "</html>");
+        pw.write("</table>");
+
+        pw.write("</body>");
+        pw.write("</html>");
     }
 
     @Override
