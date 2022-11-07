@@ -19,6 +19,7 @@ public class Organization implements Serializable {
     private final static long serialVersionUID = 1L;
     protected List<Period> periodList = new ArrayList<>();
     private Link homePage;
+    public static final Organization EMPTY = new Organization("", "", Period.EMPTY);
 
     public Organization() {
     }
@@ -82,6 +83,7 @@ public class Organization implements Serializable {
         private LocalDate finishDate;
         private String title;
         private String description;
+        public static final Period EMPTY = new Period();
 
         public Period() {
         }

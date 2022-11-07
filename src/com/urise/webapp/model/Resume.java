@@ -18,6 +18,17 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final Resume EMPTY = new Resume();
+
+    static {
+        EMPTY.setSections(SectionType.OBJECTIVE, TextSection.EMPTY);
+        EMPTY.setSections(SectionType.PERSONAL, TextSection.EMPTY);
+        EMPTY.setSections(SectionType.ACHIEVEMENT, ListSection.EMPTY);
+        EMPTY.setSections(SectionType.QUALIFICATIONS, ListSection.EMPTY);
+        EMPTY.setSections(SectionType.EXPERIENCE, new OrganizationSection(Organization.EMPTY));
+        EMPTY.setSections(SectionType.EDUCATION, new OrganizationSection(Organization.EMPTY));
+    }
+
     // Unique identifier
     private String uuid;
     private String fullName;
@@ -30,6 +41,10 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public Resume(String uuid, String fullName) {
@@ -49,6 +64,14 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     public Map<ContactType, String> getContacts() {
         return contacts;
+    }
+
+    public String getContact(ContactType type) {
+        return contacts.get(type);
+    }
+
+    public AbstractSection getSection(SectionType type) {
+        return sections.get(type);
     }
 
     public void setContacts(ContactType type, String contact) {
