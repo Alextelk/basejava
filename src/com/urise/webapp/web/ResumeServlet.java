@@ -12,16 +12,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
+
+    private enum THEME {
+        dark, light, purple
+    }
+
+    private final Set<String> themes = new HashSet<>();
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         storage = Config.get().getStorage();
+        for (THEME t : THEME.values()) {
+            themes.add(t.name());
+        }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
@@ -30,7 +38,7 @@ public class ResumeServlet extends HttpServlet {
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
 
-        final boolean isAdd = (uuid == null || uuid.length() == 0);
+        final boolean isAdd = (uuid == null || uuid.length() == 0 || fullName == null);
         Resume r;
         if (isAdd) {
             r = new Resume(fullName);
@@ -49,7 +57,7 @@ public class ResumeServlet extends HttpServlet {
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
             String[] values = request.getParameterValues(type.name());
-            if (HtmlUtil.isEmpty(value) && values.length < 2) {
+            if (HtmlUtil.isEmpty(value) || value.trim().length() == 0 && values.length < 2) {
                 r.getSections().remove(type);
             } else {
                 switch (type) {
@@ -59,8 +67,14 @@ public class ResumeServlet extends HttpServlet {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        ListSection listSection = new ListSection(value.split("\\n"));
-                        r.setSections(type, listSection);
+                        List<String> list = new ArrayList<>();
+                        String[] val = value.split("\\n");
+                        for (String s : val) {
+                            if (!Objects.equals(s, "\r")) {
+                                list.add(s);
+                            }
+                        }
+                        r.setSections(type, new ListSection(list));
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
@@ -94,13 +108,14 @@ public class ResumeServlet extends HttpServlet {
         } else {
             storage.update(r);
         }
-        response.sendRedirect("resume");
+        response.sendRedirect("resume?theme=" + getTheme(request));
     }
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         String uuid = request.getParameter("uuid");
-        String action = request.getParameter("action"); // в зависимости от action выполняем действия с резюме
+        String action = request.getParameter("action");
+        request.setAttribute("theme", getTheme(request));// в зависимости от action выполняем действия с резюме
         if (action == null) { //если action == null просто выводим список резюме
             request.setAttribute("resumes", storage.getAllSorted());
             request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
@@ -161,6 +176,11 @@ public class ResumeServlet extends HttpServlet {
         request.getRequestDispatcher(
                 ("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")
         ).forward(request, response);
+    }
+
+    private String getTheme(HttpServletRequest request) {
+        String theme = request.getParameter("theme");
+        return themes.contains(theme) ? theme : THEME.light.name();
     }
 }
 
