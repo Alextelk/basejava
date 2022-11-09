@@ -15,13 +15,13 @@ import java.io.IOException;
 import java.util.*;
 
 public class ResumeServlet extends HttpServlet {
-    private Storage storage;
 
     private enum THEME {
         dark, light, purple
     }
 
-    private final Set<String> themes = new HashSet<>();
+    private Storage storage; // = Config.get().getStorage();
+    private final Set<String> themes = new HashSet<>(); // https://stackoverflow.com/a/4936895/548473
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -32,20 +32,21 @@ public class ResumeServlet extends HttpServlet {
         }
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html; charset=UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
 
-        final boolean isAdd = (uuid == null || uuid.length() == 0 || fullName == null);
+        final boolean isCreate = (uuid == null || uuid.length() == 0);
         Resume r;
-        if (isAdd) {
+        if (isCreate) {
             r = new Resume(fullName);
         } else {
+            Config.get().checkImmutable(uuid);
             r = storage.get(uuid);
             r.setFullName(fullName);
         }
+
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
             if (HtmlUtil.isEmpty(value)) {
@@ -57,12 +58,12 @@ public class ResumeServlet extends HttpServlet {
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
             String[] values = request.getParameterValues(type.name());
-            if (HtmlUtil.isEmpty(value) || value.trim().length() == 0 && values.length < 2) {
+            if (HtmlUtil.isEmpty(value) && values.length < 2) {
                 r.getSections().remove(type);
             } else {
                 switch (type) {
-                    case PERSONAL:
                     case OBJECTIVE:
+                    case PERSONAL:
                         r.setSections(type, new TextSection(value));
                         break;
                     case ACHIEVEMENT:
@@ -76,14 +77,14 @@ public class ResumeServlet extends HttpServlet {
                         }
                         r.setSections(type, new ListSection(list));
                         break;
-                    case EXPERIENCE:
                     case EDUCATION:
-                        List<Organization> organizations = new ArrayList<>();
+                    case EXPERIENCE:
+                        List<Organization> orgs = new ArrayList<>();
                         String[] urls = request.getParameterValues(type.name() + "url");
                         for (int i = 0; i < values.length; i++) {
                             String name = values[i];
                             if (!HtmlUtil.isEmpty(name)) {
-                                List<Organization.Period> periods = new ArrayList<>();
+                                List<Organization.Period> positions = new ArrayList<>();
                                 String pfx = type.name() + i;
                                 String[] startDates = request.getParameterValues(pfx + "startDate");
                                 String[] endDates = request.getParameterValues(pfx + "endDate");
@@ -91,19 +92,18 @@ public class ResumeServlet extends HttpServlet {
                                 String[] descriptions = request.getParameterValues(pfx + "description");
                                 for (int j = 0; j < titles.length; j++) {
                                     if (!HtmlUtil.isEmpty(titles[j])) {
-                                        periods.add(new Organization.Period(DateUtil.parse(startDates[j]),
-                                                DateUtil.parse(endDates[j]), titles[j], descriptions[j]));
+                                        positions.add(new Organization.Period(DateUtil.parse(startDates[j]), DateUtil.parse(endDates[j]), titles[j], descriptions[j]));
                                     }
                                 }
-                                organizations.add(new Organization(new Link(name, urls[i]), periods));
+                                orgs.add(new Organization(new Link(name, urls[i]), positions));
                             }
                         }
-                        r.setSections(type, new OrganizationSection(organizations));
+                        r.setSections(type, new OrganizationSection(orgs));
                         break;
                 }
             }
         }
-        if (isAdd) {
+        if (isCreate) {
             storage.save(r);
         } else {
             storage.update(r);
@@ -111,12 +111,12 @@ public class ResumeServlet extends HttpServlet {
         response.sendRedirect("resume?theme=" + getTheme(request));
     }
 
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         String uuid = request.getParameter("uuid");
         String action = request.getParameter("action");
-        request.setAttribute("theme", getTheme(request));// в зависимости от action выполняем действия с резюме
-        if (action == null) { //если action == null просто выводим список резюме
+        request.setAttribute("theme", getTheme(request));
+
+        if (action == null) {
             request.setAttribute("resumes", storage.getAllSorted());
             request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
             return;
@@ -124,6 +124,7 @@ public class ResumeServlet extends HttpServlet {
         Resume r;
         switch (action) {
             case "delete":
+                Config.get().checkImmutable(uuid);
                 storage.delete(uuid);
                 response.sendRedirect("resume");
                 return;
@@ -152,11 +153,11 @@ public class ResumeServlet extends HttpServlet {
                             break;
                         case EXPERIENCE:
                         case EDUCATION:
-                            OrganizationSection organizationSection = (OrganizationSection) section;
+                            OrganizationSection orgSection = (OrganizationSection) section;
                             List<Organization> emptyFirstOrganizations = new ArrayList<>();
                             emptyFirstOrganizations.add(Organization.EMPTY);
-                            if (organizationSection != null) {
-                                for (Organization org : organizationSection.getOrganizations()) {
+                            if (orgSection != null) {
+                                for (Organization org : orgSection.getOrganizations()) {
                                     List<Organization.Period> emptyFirstPositions = new ArrayList<>();
                                     emptyFirstPositions.add(Organization.Period.EMPTY);
                                     emptyFirstPositions.addAll(org.getPeriodList());
@@ -170,7 +171,7 @@ public class ResumeServlet extends HttpServlet {
                 }
                 break;
             default:
-                throw new IllegalArgumentException("Action " + action + "is illegal");
+                throw new IllegalArgumentException("Action " + action + " is illegal");
         }
         request.setAttribute("resume", r);
         request.getRequestDispatcher(
@@ -183,4 +184,3 @@ public class ResumeServlet extends HttpServlet {
         return themes.contains(theme) ? theme : THEME.light.name();
     }
 }
-

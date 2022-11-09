@@ -90,7 +90,7 @@
             <div class="spacer"></div>
 
             <div class="button-section">
-                <button class="red-cancel-button" onclick="window.history.back()">Отменить</button>
+                <button type="reset" class="red-cancel-button" onclick="window.history.back()">Отменить</button>
                 <button class="green-submit-button" type="submit">Сохранить</button>
             </div>
 
